@@ -1,10 +1,11 @@
 /** @format */
 
-import React, { useRef } from "react";
+import React from "react";
 
 import { Saturation } from "./Saturation";
 
 import { useColorManipulation } from "../hooks/use-color-manipulation";
+import { Alpha } from "./Alpha";
 import { Hue } from "./Hue";
 
 export const ColorPicker = ({
@@ -13,9 +14,6 @@ export const ColorPicker = ({
     onChange,
     ...rest
 }) => {
-    const nodeRef = useRef(null);
-    // useStyleSheet(nodeRef);
-
     const [hsva, updateHsva] = useColorManipulation(
         colorModel,
         color,
@@ -23,10 +21,11 @@ export const ColorPicker = ({
     );
 
     return (
-        <div {...rest} ref={nodeRef} className={"react-colorful"}>
+        <div {...rest} className={"react-colorful"}>
             <Saturation hsva={hsva} onChange={updateHsva} />
-            <Hue
-                hue={hsva.h}
+            <Hue hue={hsva.h} onChange={updateHsva} />
+            <Alpha
+                hsva={hsva}
                 onChange={updateHsva}
                 className="react-colorful__last-control"
             />
