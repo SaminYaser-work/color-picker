@@ -59,8 +59,6 @@ export const hslaStringToHsva = (hslString) => {
     });
 };
 
-export const hslStringToHsva = hslaStringToHsva;
-
 export const hslaToHsva = ({ h, s, l, a }) => {
     s *= (l < 50 ? l : 100 - l) / 100;
 
@@ -94,16 +92,6 @@ export const hsvaToHslString = (hsva) => {
     return `hsl(${h}, ${s}%, ${l}%)`;
 };
 
-export const hsvaToHsvString = (hsva) => {
-    const { h, s, v } = roundHsva(hsva);
-    return `hsv(${h}, ${s}%, ${v}%)`;
-};
-
-export const hsvaToHsvaString = (hsva) => {
-    const { h, s, v, a } = roundHsva(hsva);
-    return `hsva(${h}, ${s}%, ${v}%, ${a})`;
-};
-
 export const hsvaToHslaString = (hsva) => {
     const { h, s, l, a } = hsvaToHsla(hsva);
     return `hsla(${h}, ${s}%, ${l}%, ${a})`;
@@ -128,16 +116,6 @@ export const hsvaToRgba = ({ h, s, v, a }) => {
     };
 };
 
-export const hsvaToRgbString = (hsva) => {
-    const { r, g, b } = hsvaToRgba(hsva);
-    return `rgb(${r}, ${g}, ${b})`;
-};
-
-export const hsvaToRgbaString = (hsva) => {
-    const { r, g, b, a } = hsvaToRgba(hsva);
-    return `rgba(${r}, ${g}, ${b}, ${a})`;
-};
-
 export const hsvaStringToHsva = (hsvString) => {
     const matcher =
         /hsva?\(?\s*(-?\d*\.?\d+)(deg|rad|grad|turn)?[,\s]+(-?\d*\.?\d+)%?[,\s]+(-?\d*\.?\d+)%?,?\s*[/\s]*(-?\d*\.?\d+)?(%)?\s*\)?/i;
@@ -153,8 +131,6 @@ export const hsvaStringToHsva = (hsvString) => {
     });
 };
 
-export const hsvStringToHsva = hsvaStringToHsva;
-
 export const rgbaStringToHsva = (rgbaString) => {
     const matcher =
         /rgba?\(?\s*(-?\d*\.?\d+)(%)?[,\s]+(-?\d*\.?\d+)(%)?[,\s]+(-?\d*\.?\d+)(%)?,?\s*[/\s]*(-?\d*\.?\d+)?(%)?\s*\)?/i;
@@ -169,8 +145,6 @@ export const rgbaStringToHsva = (rgbaString) => {
         a: match[7] === undefined ? 1 : Number(match[7]) / (match[8] ? 100 : 1),
     });
 };
-
-export const rgbStringToHsva = rgbaStringToHsva;
 
 const format = (number) => {
     const hex = number.toString(16);
@@ -203,13 +177,6 @@ export const rgbaToHsva = ({ r, g, b, a }) => {
     };
 };
 
-export const rgbaToRgb = ({ r, g, b }) => {
-    r, g, b;
-};
-
-export const hslaToHsl = ({ h, s, l }) => {
-    h, s, l;
-};
 
 export const roundHsva = (hsva) => ({
     h: round(hsva.h),
@@ -218,7 +185,3 @@ export const roundHsva = (hsva) => ({
     a: round(hsva.a, 2),
 });
 
-export const hsvaToHsv = (hsva) => {
-    const { h, s, v } = roundHsva(hsva);
-    return { h, s, v };
-};

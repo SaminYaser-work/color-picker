@@ -13,7 +13,7 @@
 .react-colorful__saturation {
     position: relative;
     flex-grow: 1;
-    border-color: transparent; /* Fixes https://github.com/omgovich/react-colorful/issues/139 */
+    border-color: transparent;
     border-bottom: 12px solid #000;
     border-radius: 8px 8px 0 0;
     background-image: linear-gradient(to top, #000, rgba(0, 0, 0, 0)),
@@ -32,7 +32,6 @@
     border-radius: inherit;
 }
 
-/* Improve elements rendering on light backgrounds */
 .react-colorful__alpha-gradient,
 .react-colorful__saturation {
     box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
@@ -57,11 +56,6 @@
     );
 }
 
-/* Round bottom corners of the last element: `Hue` for `ColorPicker` or `Alpha` for `AlphaColorPicker` */
-.react-colorful__last-control {
-    border-radius: 0 0 8px 8px;
-}
-
 .react-colorful__interactive {
     position: absolute;
     left: 0;
@@ -70,7 +64,6 @@
     bottom: 0;
     border-radius: inherit;
     outline: none;
-    /* Don't trigger the default scrolling behavior when the event is originating from this element */
     touch-action: none;
 }
 
@@ -91,19 +84,16 @@
     transform: translate(-50%, -50%) scale(1.1);
 }
 
-/* Chessboard-like pattern for alpha related elements */
 .react-colorful__alpha,
 .react-colorful__alpha-pointer {
     background-color: #fff;
     background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill-opacity=".05"><rect x="8" width="8" height="8"/><rect y="8" width="8" height="8"/></svg>');
 }
 
-/* Display the saturation pointer over the hue one */
 .react-colorful__saturation-pointer {
     z-index: 3;
 }
 
-/* Display the hue pointer over the alpha one */
 .react-colorful__hue-pointer {
     z-index: 2;
 }
