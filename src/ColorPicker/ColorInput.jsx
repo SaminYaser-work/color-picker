@@ -1,86 +1,67 @@
 /** @format */
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useEventCallback } from "../hooks/use-event-callback";
 
-import { validHex } from "../utils/validate";
+import { validHex, validRGB } from "../utils/validate";
 
-/** Adds "#" symbol to the beginning of the string */
-const prefix = (value) => "#" + value;
+const rgbToHex = (rgb) => {
+    const rgbMatcher =
+        /^rgb(a)?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})(?:\s*,\s*(0|0?\.\d+|1))?\s*\)$/;
+    const match = rgb.match(rgbMatcher);
 
-export const ColorInput = (props) => {
-    const { prefixed, alpha = true, ...rest } = props;
+    if (!match) return null;
 
-    /** Escapes all non-hexadecimal characters including "#" */
-    const escape = useCallback(
-        (value) =>
-            value.replace(/([^0-9A-F]+)/gi, "").substring(0, alpha ? 8 : 6),
-        [alpha]
-    );
+    let [, , r, g, b, a] = match;
+    r = parseInt(r, 10).toString(16).padStart(2, "0");
+    g = parseInt(g, 10).toString(16).padStart(2, "0");
+    b = parseInt(b, 10).toString(16).padStart(2, "0");
 
-    /** Validates hexadecimal strings */
-    const validate = useCallback((value) => validHex(value, alpha), [alpha]);
+    if (a !== undefined) {
+        a = Math.round(parseFloat(a) * 255)
+            .toString(16)
+            .padStart(2, "0");
+    }
 
-    return (
-        <Input
-            {...rest}
-            escape={escape}
-            format={prefixed ? prefix : undefined}
-            process={prefix}
-            validate={validate}
-        />
-    );
+    return `#${r}${g}${b}${a || ""}`;
 };
 
-const Input = (props) => {
-    const {
-        color = "",
-        onChange,
-        onBlur,
-        escape,
-        validate,
-        format,
-        process,
-        ...rest
-    } = props;
-    const [value, setValue] = useState(() => escape(color));
+function process(value) {
+    if (value.startsWith("rgb")) {
+        return rgbToHex(value);
+    } else if (value.startsWith("#")) {
+        return value;
+    }
+    return "#ffff";
+}
+
+const validate = (value) => {
+    if (!value) return false;
+    if (value.startsWith("#")) {
+        return validHex(value);
+    } else if (value.startsWith("rgb")) {
+        return validRGB(value);
+    }
+
+    return false;
+};
+
+export const ColorInput = ({ color = "", onChange }) => {
+    const [value, setValue] = useState(color);
     const onChangeCallback = useEventCallback(onChange);
-    const onBlurCallback = useEventCallback(onBlur);
 
-    // Trigger `onChange` handler only if the input value is a valid color
-    const handleChange = useCallback(
-        (e) => {
-            const inputValue = escape(e.target.value);
-            setValue(inputValue);
-            if (validate(inputValue))
-                onChangeCallback(process ? process(inputValue) : inputValue);
-        },
-        [escape, process, validate, onChangeCallback]
-    );
+    const handleChange = (e) => {
+        const inputValue = e.target.value;
+        setValue(inputValue);
+        if (validate(inputValue)) {
+            onChangeCallback(process(inputValue));
+        }
+    };
 
-    // Take the color from props if the last typed color (in local state) is not valid
-    const handleBlur = useCallback(
-        (e) => {
-            if (!validate(e.target.value)) setValue(escape(color));
-            onBlurCallback(e);
-        },
-        [color, escape, validate, onBlurCallback]
-    );
-
-    // Update the local state when `color` property value is changed
     useEffect(() => {
-        setValue(escape(color));
-    }, [color, escape]);
+        setValue(color);
+    }, [color]);
 
-    return (
-        <input
-            {...rest}
-            value={format ? format(value) : value}
-            // the element should not be checked for spelling errors
-            spellCheck="false"
-            onChange={handleChange}
-            onBlur={handleBlur}
-        />
-    );
+    return <input value={value} spellCheck="false" onChange={handleChange} />;
 };

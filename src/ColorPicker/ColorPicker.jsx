@@ -2,33 +2,41 @@
 
 import React from "react";
 
+import { useColorManipulation } from "../hooks/use-color-manipulation";
+import { equalHex } from "../utils/compare";
+import { hexToHsva, hsvaToHex } from "../utils/convert";
+import { Alpha } from "./Alpha";
+import { ColorInput } from "./ColorInput";
+import { EyeDropper } from "./EyeDropper";
+import { Hue } from "./Hue";
 import { Saturation } from "./Saturation";
 
-import { useColorManipulation } from "../hooks/use-color-manipulation";
-import { Alpha } from "./Alpha";
-import { Hue } from "./Hue";
+const colorModel = {
+    defaultColor: "0001",
+    toHsva: hexToHsva,
+    fromHsva: hsvaToHex,
+    equal: equalHex,
+};
 
-export const ColorPicker = ({
-    colorModel,
-    color = colorModel.defaultColor,
-    onChange,
-    ...rest
-}) => {
+export const ColorPicker = ({ color, setColor }) => {
     const [hsva, updateHsva] = useColorManipulation(
         colorModel,
         color,
-        onChange
+        setColor
     );
 
     return (
-        <div {...rest} className={"react-colorful"}>
-            <Saturation hsva={hsva} onChange={updateHsva} />
-            <Hue hue={hsva.h} onChange={updateHsva} />
-            <Alpha
-                hsva={hsva}
-                onChange={updateHsva}
-                className="react-colorful__last-control"
-            />
+        <div>
+            <div className={"react-colorful"}>
+                <Saturation hsva={hsva} onChange={updateHsva} />
+                <Hue hue={hsva.h} onChange={updateHsva} />
+                <Alpha hsva={hsva} onChange={updateHsva} />
+            </div>
+
+            <div>
+                <EyeDropper setColor={setColor} />
+                <ColorInput color={color} onChange={setColor} />
+            </div>
         </div>
     );
 };
